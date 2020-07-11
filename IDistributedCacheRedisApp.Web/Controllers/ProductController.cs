@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using IDistributedCacheRedisApp.Web.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -22,20 +23,35 @@ namespace IDistributedCacheRedisApp.Web.Controllers
             cacheEntryOptions.AbsoluteExpiration = DateTime.Now.AddMinutes(2);
              _distributedCache.SetString("myname","Parla",cacheEntryOptions);
              await _distributedCache.SetStringAsync("lastname", "Yerli", cacheEntryOptions);
-
+            // complex typeların cachelenmesi
             Product product = new Product { Id = 1, Name = "Kalem", Price = 12 };
             string jsonProduct = JsonConvert.SerializeObject(product);
-
             await _distributedCache.SetStringAsync("product:1", jsonProduct, cacheEntryOptions); ;
+
+            //complex typeların binary formata dönüştürüp cachelenmesi. İşlem kalabalıklığı olduğu için üstteki yöntem daha sık tercih edilebilir.
+            
+            Product byteProduct = new Product { Id = 2, Name = "Silgi", Price = 13 };
+            string jsonproduct2 = JsonConvert.SerializeObject(byteProduct);
+            Byte[] byteproduct = Encoding.UTF8.GetBytes(jsonproduct2);
+            _distributedCache.Set("product:2",byteproduct);
             return View();
         }
 
         public IActionResult Show()
         {
             string name = _distributedCache.GetString("myname");
-            string product = _distributedCache.GetString("product:1");
-            ViewBag.product = product;
+            string jsonProduct = _distributedCache.GetString("product:1");
+            Product p = JsonConvert.DeserializeObject<Product>(jsonProduct);
+
+            Byte[] byteProduct = _distributedCache.Get("product:2");
+            string jsonproduct = Encoding.UTF8.GetString(byteProduct);
+            Product pj = JsonConvert.DeserializeObject<Product>(jsonproduct);
+
+
+            ViewBag.product = p;
+            ViewBag.productpj = pj;
             ViewBag.name = name;
+
             return View();
         }
 
