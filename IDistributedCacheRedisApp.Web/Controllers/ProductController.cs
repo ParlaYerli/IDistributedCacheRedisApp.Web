@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,6 +59,15 @@ namespace IDistributedCacheRedisApp.Web.Controllers
         public IActionResult Remove()
         {
             _distributedCache.Remove("myname");
+            return View();
+        }
+
+        public IActionResult ImageCache()
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/apple.jpg");
+            byte[] imageByte = System.IO.File.ReadAllBytes(path);
+            _distributedCache.Set("picture",imageByte);
+            
             return View();
         }
     }
