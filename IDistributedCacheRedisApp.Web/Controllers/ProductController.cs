@@ -35,6 +35,9 @@ namespace IDistributedCacheRedisApp.Web.Controllers
             string jsonproduct2 = JsonConvert.SerializeObject(byteProduct);
             Byte[] byteproduct = Encoding.UTF8.GetBytes(jsonproduct2);
             _distributedCache.Set("product:2",byteproduct);
+
+
+
             return View();
         }
 
@@ -69,6 +72,13 @@ namespace IDistributedCacheRedisApp.Web.Controllers
             _distributedCache.Set("picture",imageByte);
             
             return View();
+        }
+
+        public IActionResult ImageUrl()
+        {
+            byte[] imageByte = _distributedCache.Get("picture");
+            return File(imageByte,"image/jpg");
+            
         }
     }
 }
