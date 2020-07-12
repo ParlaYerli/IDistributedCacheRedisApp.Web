@@ -10,9 +10,10 @@ namespace RedisExchangeAPI.Web.Controllers
 {
     public class SetTypeController : Controller
     {
+        // Set türünde eklenen veriler random ve unique seklinde kaydedilir.
         private readonly RedisService _redisService;
         private readonly IDatabase database;
-        private string listKey = "hashnames"; // keyi sabit olarak yazıyorum cünkü sürekli aynısını kullanacağım.
+        private string listKey = "setnames"; // keyi sabit olarak yazıyorum cünkü sürekli aynısını kullanacağım.
 
         public SetTypeController(RedisService _redisService)
         {
@@ -21,7 +22,7 @@ namespace RedisExchangeAPI.Web.Controllers
         }
         public IActionResult Index()
         {
-            HashSet<string> nameList = new HashSet<string>();//HashSet verileri unique olarak ve sırasız bir sekilde tutar.
+            HashSet<string> nameList = new HashSet<string>();//Set verileri unique olarak ve sırasız bir sekilde tutar.
             if (database.KeyExists(listKey))
             {
                 database.SetMembers(listKey).ToList().ForEach(x=>
