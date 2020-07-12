@@ -27,21 +27,29 @@ namespace RedisExchangeAPI.Web.Controllers
                 database.ListRange(listKey).ToList().ForEach(x =>
                 {
                     nameList.Add(x.ToString());
-                 });
+                });
             }
-            
+
             return View(nameList);
         }
         [HttpPost]
         public IActionResult Add(string name)
         {
-            database.ListRightPush(listKey,name);
+            database.ListRightPush(listKey, name);
+            //database.ListRightPush(listKey,name); listenin basına ekler
             return RedirectToAction("Index");
         }
 
         public IActionResult DeleteItem(string name)
         {
-            database.ListRemoveAsync(listKey,name).Wait();
+            database.ListRemoveAsync(listKey, name).Wait();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult DeleteFirstItem(string name)
+        {
+            database.ListLeftPop(listKey);
+             //database.ListRightPop(listKey);
             return RedirectToAction("Index");
         }
     }
