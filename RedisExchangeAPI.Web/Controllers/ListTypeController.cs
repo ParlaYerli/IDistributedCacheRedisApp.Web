@@ -32,6 +32,7 @@ namespace RedisExchangeAPI.Web.Controllers
 
             return View(nameList);
         }
+
         [HttpPost]
         public IActionResult Add(string name)
         {
